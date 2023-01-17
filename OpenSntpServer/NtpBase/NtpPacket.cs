@@ -41,7 +41,7 @@ namespace OpenSntpServer.NtpBase
                     ((x & 0x000000ff) << 24));
         }
 
-        protected void InsertUIntBE(uint num, int offset)
+        protected void ChangeUIntBE(uint num, int offset)
         {
             _bytes[offset] = (byte)(num >> 24);
             _bytes[offset + 1] = (byte)(num >> 16);

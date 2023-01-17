@@ -21,8 +21,8 @@ namespace OpenSntpServer.NtpBase
         private byte[] InsertTransmitTime()
         {
             var transmitTime = GetTimeStamp();
-            InsertUIntBE(transmitTime.sec, 40);
-            InsertUIntBE(transmitTime.frac, 44);
+            ChangeUIntBE(transmitTime.sec, 40);
+            ChangeUIntBE(transmitTime.frac, 44);
             return base.Bytes;
         }
 
@@ -42,14 +42,14 @@ namespace OpenSntpServer.NtpBase
             base.Bytes[13] = 0x4F;
             base.Bytes[14] = 0x43;
             base.Bytes[15] = 0x4C;
-            InsertUIntBE(reference, 16);
+            ChangeUIntBE(reference, 16);
             //Copy client transmit
             for (int i = 0; i < 8; i++)
             {
                 base.Bytes[24 + i] = data[40 + i];
             }
-            InsertUIntBE(arrival.sec, 32);
-            InsertUIntBE(arrival.frac, 36);
+            ChangeUIntBE(arrival.sec, 32);
+            ChangeUIntBE(arrival.frac, 36);
         }
 
         private (uint sec, uint frac) GetTimeStamp()
