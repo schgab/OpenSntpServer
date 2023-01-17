@@ -8,27 +8,27 @@ namespace OpenSntpServer.NtpBase
         /// <summary>
         /// Adds the Transmit timestamp when getter is used for most accurate result
         /// </summary>
-        public override byte[] Bytes { get => insertTransmitTime(); protected set => base.Bytes = value; }
+        public override byte[] Bytes { get => InsertTransmitTime(); protected set => base.Bytes = value; }
 
         public const int RESPONSE_SIZE = 48;
 
         public NtpServerPacket(byte[] clientRequest)
         {
-            prepBytes(clientRequest);
+            PrepBytes(clientRequest);
         }
 
 
-        private byte[] insertTransmitTime()
+        private byte[] InsertTransmitTime()
         {
-            var transmitTime = getTimeStamp();
+            var transmitTime = GetTimeStamp();
             InsertUIntBE(transmitTime.sec, 40);
             InsertUIntBE(transmitTime.frac, 44);
             return base.Bytes;
         }
 
-        private void prepBytes(byte[] data)
+        private void PrepBytes(byte[] data)
         {
-            var arrival = getTimeStamp();
+            var arrival = GetTimeStamp();
             var reference = arrival.sec - 60; //Fake reference
             byte firstByte = (byte)(data[0] & 0b00111000); //Copy version from client
             firstByte = (byte)(firstByte | 0b00000100); //Set mode 4 = server
@@ -52,7 +52,7 @@ namespace OpenSntpServer.NtpBase
             InsertUIntBE(arrival.frac, 36);
         }
 
-        private (uint sec, uint frac) getTimeStamp()
+        private (uint sec, uint frac) GetTimeStamp()
         {
             var nowUtc = DateTime.Now.ToUniversalTime();
             var seconds = (nowUtc.Subtract(BaseDate).TotalSeconds);

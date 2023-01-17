@@ -15,9 +15,9 @@ namespace OpenSntpServer.NtpBase
         }
 
 
-        public DateTime UTCTime => calculateUTCTime();
+        public DateTime UTCTime => CalculateUTCTime();
 
-        private DateTime calculateUTCTime()
+        private DateTime CalculateUTCTime()
         {
             ulong seconds = SwapEndianess(BitConverter.ToUInt32(Bytes, 40));
             ulong fraction = SwapEndianess(BitConverter.ToUInt32(Bytes, 44));
