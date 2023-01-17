@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Buffers.Binary;
 namespace OpenSntpServer.NtpBase
 {
     public abstract class NtpPacket
@@ -19,8 +19,8 @@ namespace OpenSntpServer.NtpBase
 
         private DateTime CalculateUTCTime()
         {
-            ulong seconds = SwapEndianess(BitConverter.ToUInt32(Bytes, 40));
-            ulong fraction = SwapEndianess(BitConverter.ToUInt32(Bytes, 44));
+            ulong seconds = BinaryPrimitives.ReadUInt32BigEndian(Bytes.AsSpan(40,4));
+            ulong fraction = BinaryPrimitives.ReadUInt32BigEndian(Bytes.AsSpan(44,4));            
             var dt = BaseDate.AddMilliseconds(seconds * 1000);
             double ms = (fraction * 1000.0) / (1UL << 32);
             dt.AddMilliseconds(ms);
@@ -32,21 +32,10 @@ namespace OpenSntpServer.NtpBase
         {
             Bytes = new byte[48];
         }
-
-        protected uint SwapEndianess(uint x)
-        {
-            return (((x & 0xff000000) >> 24) +
-                    ((x & 0x00ff0000) >> 8) +
-                    ((x & 0x0000ff00) << 8) +
-                    ((x & 0x000000ff) << 24));
-        }
-
+    
         protected void ChangeUIntBE(uint num, int offset)
         {
-            _bytes[offset] = (byte)(num >> 24);
-            _bytes[offset + 1] = (byte)(num >> 16);
-            _bytes[offset + 2] = (byte)(num >> 8);
-            _bytes[offset + 3] = (byte)(num & 0x000000FF);
+            BinaryPrimitives.WriteUInt32BigEndian(_bytes.AsSpan(offset),num);
         }
 
 
