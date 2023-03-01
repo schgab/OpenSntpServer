@@ -44,10 +44,7 @@ namespace OpenSntpServer.NtpBase
             base.Bytes[15] = 0x4C;
             ChangeUIntBE(reference, 16);
             //Copy client transmit
-            for (int i = 0; i < 8; i++)
-            {
-                base.Bytes[24 + i] = data[40 + i];
-            }
+            data.AsSpan(40,8).CopyTo(base.Bytes.AsSpan(24,8));
             ChangeUIntBE(arrival.sec, 32);
             ChangeUIntBE(arrival.frac, 36);
         }
